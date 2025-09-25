@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import requests
 from tkinter import filedialog, messagebox
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw
 import io , os
 
 API_URL = "http://127.0.0.1:5000"
@@ -159,14 +159,27 @@ def open_main_window():
     profile_info = ctk.CTkLabel(profile_tab, text=f"Username: {current_user}", font=("Arial", 16))
     profile_info.pack(pady=20)
 
-    # Profile picture placeholder (frame)
+    profile_image_ref = None  # keep global reference
+
+    # Profile picture placeholder (start empty)
     profile_pic_label = ctk.CTkLabel(profile_tab, text="")
     profile_pic_label.pack(pady=10)
 
-    # keep a reference to avoid garbage collection
-    profile_image_ref = None  
+    def make_circle(img: Image.Image, size=(150, 150)):
+        """Resize and crop an image into a circular format"""
+        img = img.resize(size, Image.LANCZOS).convert("RGBA")
 
-# Function to upload + show profile picture
+        # Create circular mask
+        mask = Image.new("L", size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, size[0], size[1]), fill=255)
+
+        # Apply mask
+        circular_img = Image.new("RGBA", size)
+        circular_img.paste(img, (0, 0), mask=mask)
+
+        return circular_img
+
     def upload_profile_pic():
         global profile_image_ref
 
@@ -175,15 +188,13 @@ def open_main_window():
             return
 
         try:
-            # Open and resize image
             img = Image.open(file_path)
-            img = img.resize((150, 150))  # make it fit nicely
-            profile_image_ref = ImageTk.PhotoImage(img)
+            img = make_circle(img)  # convert to circular
 
-            # Update label to show the image
+            profile_image_ref = ImageTk.PhotoImage(img)
             profile_pic_label.configure(image=profile_image_ref, text="")
 
-            # TODO: send `file_path` to backend to save permanently for this user
+            # TODO: send image to backend for saving
             messagebox.showinfo("Success", "Profile picture uploaded!")
 
         except Exception as e:
