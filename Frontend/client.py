@@ -2,7 +2,7 @@ import customtkinter as ctk
 import requests
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-import io
+import io , os
 
 API_URL = "http://127.0.0.1:5000"
 current_user = None  # track logged-in user
@@ -147,6 +147,67 @@ def open_main_window():
                     img_label.pack(pady=5)
 
     refresh_feed()
+    refresh_button = ctk.CTkButton(feed_tab, text="Refresh Feed", command=refresh_feed)
+    refresh_button.pack(pady=10)
+
+    # ---------------- Profile Tab ---------------
+
+# ---------------- Profile Tab ----------------
+    profile_tab = tabview.add("Profile")        
+
+
+    profile_info = ctk.CTkLabel(profile_tab, text=f"Username: {current_user}", font=("Arial", 16))
+    profile_info.pack(pady=20)
+
+    # Profile picture placeholder (frame)
+    profile_pic_label = ctk.CTkLabel(profile_tab, text="")
+    profile_pic_label.pack(pady=10)
+
+    # keep a reference to avoid garbage collection
+    profile_image_ref = None  
+
+# Function to upload + show profile picture
+    def upload_profile_pic():
+        global profile_image_ref
+
+        file_path = filedialog.askopenfilename(filetypes=[("Images", "*.png;*.jpg;*.jpeg")])
+        if not file_path:
+            return
+
+        try:
+            # Open and resize image
+            img = Image.open(file_path)
+            img = img.resize((150, 150))  # make it fit nicely
+            profile_image_ref = ImageTk.PhotoImage(img)
+
+            # Update label to show the image
+            profile_pic_label.configure(image=profile_image_ref, text="")
+
+            # TODO: send `file_path` to backend to save permanently for this user
+            messagebox.showinfo("Success", "Profile picture uploaded!")
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load image: {e}")
+
+    upload_pic_button = ctk.CTkButton(profile_tab, text="Upload Profile Picture", command=upload_profile_pic)
+    upload_pic_button.pack(pady=10)
+
+    
+
+
+    # Additional profile info 
+    profile_info2 = ctk.CTkLabel(profile_tab, text="Bio: Avid artist and doodler.", font=("Arial", 12))
+    profile_info2.pack(pady=10)
+    profile_info3 = ctk.CTkLabel(profile_tab, text="Location: Tanta City", font=("Arial", 12))
+    profile_info3.pack(pady=10)
+    profile_info4 = ctk.CTkLabel(profile_tab, text="Member since: 2025", font=("Arial", 12))
+    profile_info4.pack(pady=10)
+    profile_info5 = ctk.CTkLabel(profile_tab, text="Interests: Sketching, Painting, Digital Art", font=("Arial", 12))
+    profile_info5.pack(pady=10)
+    
+
+
+
 
     # ---------------- RIGHT SIDEBAR ----------------
     right_sidebar = ctk.CTkFrame(main, width=200, corner_radius=0)
