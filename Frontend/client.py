@@ -150,6 +150,15 @@ def open_main_window():
     refresh_button = ctk.CTkButton(feed_tab, text="Refresh Feed", command=refresh_feed)
     refresh_button.pack(pady=10)
 
+    #Back to login button
+    def logout():
+        global current_user
+        current_user = None
+        main.destroy()
+        open_login_window()
+    logout_button = ctk.CTkButton(left_sidebar, text="Logout", command=logout)
+    logout_button.pack(pady=20)
+
     # ---------------- Profile Tab ---------------
 
 # ---------------- Profile Tab ----------------
