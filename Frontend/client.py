@@ -153,17 +153,9 @@ def open_main_window():
     # ---------------- Profile Tab ---------------
 
 # ---------------- Profile Tab ----------------
-    profile_tab = tabview.add("Profile")        
-
-
-    profile_info = ctk.CTkLabel(profile_tab, text=f"Username: {current_user}", font=("Arial", 16))
-    profile_info.pack(pady=20)
+   
 
     profile_image_ref = None  # keep global reference
-
-    # Profile picture placeholder (start empty)
-    profile_pic_label = ctk.CTkLabel(profile_tab, text="")
-    profile_pic_label.pack(pady=10)
 
     def make_circle(img: Image.Image, size=(150, 150)):
         """Resize and crop an image into a circular format"""
@@ -180,6 +172,29 @@ def open_main_window():
 
         return circular_img
 
+# ---------------- Profile Tab ----------------
+    profile_tab = tabview.add("Profile")
+
+    profile_info = ctk.CTkLabel(profile_tab, text=f"Username: {current_user}", font=("Arial", 16))
+    profile_info.pack(pady=20)
+
+    # Default gray placeholder avatar
+    def create_placeholder(size=(150, 150)):
+        img = Image.new("RGBA", size, (200, 200, 200, 255))  # gray circle
+        mask = Image.new("L", size, 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, size[0], size[1]), fill=255)
+        placeholder = Image.new("RGBA", size, (255, 255, 255, 0))
+        placeholder.paste(img, (0, 0), mask=mask)
+        return placeholder
+
+    placeholder_img = create_placeholder()
+    profile_image_ref = ImageTk.PhotoImage(placeholder_img)
+
+    profile_pic_label = ctk.CTkLabel(profile_tab, image=profile_image_ref, text="")
+    profile_pic_label.pack(pady=10)
+
+    # Upload new profile picture
     def upload_profile_pic():
         global profile_image_ref
 
@@ -202,6 +217,7 @@ def open_main_window():
 
     upload_pic_button = ctk.CTkButton(profile_tab, text="Upload Profile Picture", command=upload_profile_pic)
     upload_pic_button.pack(pady=10)
+
 
     
 
