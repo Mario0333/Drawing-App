@@ -36,10 +36,10 @@ def create_placeholder(size=(150, 150)):
 # ---------------- LOGIN SCREEN ----------------
 def open_login_window():
     app = ctk.CTk()
-    app.title("Drawing Social App - Login")
+    app.title("PALETTE - Login")
     app.geometry("500x450")
     app.resizable(False, False)
-    
+    app.configure(fg_color="#FFFFFF")
     
 
     mode = ctk.StringVar(value="login")
@@ -47,12 +47,12 @@ def open_login_window():
     def switch_mode():
         if mode.get() == "login":
             mode.set("signup")
-            title_label.configure(text="Signup")
+            title_label.configure(text="SIGNUP")
             action_button.configure(text="Signup")
             switch_button.configure(text="Switch to Login")
         else:
             mode.set("login")
-            title_label.configure(text="Login")
+            title_label.configure(text="LOGIN")
             action_button.configure(text="Login")
             switch_button.configure(text="Switch to Signup")
 
@@ -78,25 +78,32 @@ def open_login_window():
             messagebox.showerror("Error", response.json()["message"])
 
     # UI
-    title_label = ctk.CTkLabel(app, text="Login", font=("Arial", 40, "bold"))
-    title_label.pack(pady=20)
+    
+     #frame
+    frame = ctk.CTkFrame(app, width=400, height=400, corner_radius=15 , fg_color="#A39775")
+    frame.pack(pady=20)
+    frame.pack_propagate(False)  # prevent frame from resizing to fit contents
+   
 
-    entry_username = ctk.CTkEntry(app, placeholder_text="Username")
+    title_label = ctk.CTkLabel(frame, text="LOGIN", font=("Arial", 40, "bold"), text_color="black")
+    title_label.pack(pady=20)
+    
+    entry_username = ctk.CTkEntry(frame, placeholder_text="Username", width=300 , fg_color="#FFFFFF", text_color="black", )
     entry_username.pack(pady=10)
 
-    entry_password = ctk.CTkEntry(app, placeholder_text="Password", show="*")
+    entry_password = ctk.CTkEntry(frame, placeholder_text="Password", show="*", width=300 , fg_color="#FFFFFF", text_color="black")
     entry_password.pack(pady=10)
 
-    action_button = ctk.CTkButton(app, text="Login", command=submit_action , fg_color="#C44E00", text_color="black", width=100, height=40 ,  corner_radius=10, hover_color="#0DA000")
+    action_button = ctk.CTkButton(frame, text="Login", command=submit_action , font=("Arial",16,"bold") , fg_color="#C44E00", text_color="black", width=160, height=40 ,  corner_radius=20, hover_color="#0DA000")
     action_button.pack(pady=10)
 
-    switch_button = ctk.CTkButton(app, text="Switch to Signup", command=switch_mode,  fg_color="#C44E00", text_color="black", width=100, height=40 ,  corner_radius=10, hover_color="#0DA000")
+    switch_button = ctk.CTkButton(frame, text="Switch to Signup", command=switch_mode, font=("Arial",16,"bold") , fg_color="#C44E00", text_color="black", width=140, height=40 ,  corner_radius=20, hover_color="#0DA000")
     switch_button.pack(pady=10)
 
-    background_label = ctk.CTkLabel(app, text="Welcome to Palette! Share Your Masterpiece!.", font=("Arial", 12))
+    background_label = ctk.CTkLabel(frame, text="Welcome to Palette! Share Your Masterpiece!.", font=("Arial", 12), text_color="black")
     background_label.pack(side="bottom", pady=10)
 
-    logo_label = ctk.CTkLabel(app, text="🎨", height= 1000 , width= 500, font=("Arial", 50))
+    logo_label = ctk.CTkLabel(frame, text="🎨", height= 1000 , width= 500, font=("Arial", 50), text_color="orange" )
     logo_label.pack(side="left", padx=0, pady=0, anchor="center")
 
     app.mainloop()
@@ -135,7 +142,7 @@ def open_main_window():
     search_entry = ctk.CTkEntry(search_frame, placeholder_text="Search users...", width=200 , fg_color="#FFFFFF")
     search_entry.pack(side="left", padx=5)
 
-    search_button = ctk.CTkButton(search_frame, text="Search", command=search_action, width=80, height=30)
+    search_button = ctk.CTkButton(search_frame, text="Search 🔍", command=search_action, width=80, height=30, fg_color="Black")
     search_button.pack(side="left", padx=5)
 
     menu_username_label = ctk.CTkLabel(menu_bar, text=f"{current_user}", font=("Arial", 14, "bold"))
@@ -194,10 +201,10 @@ def open_main_window():
 
 
     # ---------------- LEFT SIDEBAR ----------------
-    left_sidebar = ctk.CTkFrame(main, width=500, corner_radius=15 ,fg_color="#FFFFFF")
+    left_sidebar = ctk.CTkFrame(main, width=500, corner_radius=15 ,fg_color="#BBA25D")
     left_sidebar.pack(side="left", fill="y", padx=20 , pady=20, )
 
-    profile_label = ctk.CTkLabel(left_sidebar, text=f"                    Logged in as:\n{current_user}                     ", font=("Arial", 14), anchor="center", text_color="black")
+    profile_label = ctk.CTkLabel(left_sidebar, text=f"Logged in as: {current_user}", width=200,  font=("Arial", 14), anchor="center", text_color="black")
     profile_label.pack(pady=20)
 
     friends_label = ctk.CTkLabel(left_sidebar, text="          Friends        ", font=("Arial", 16), text_color="black")
@@ -210,7 +217,7 @@ def open_main_window():
 
 
     # ---------------- MAIN CONTENT ----------------
-    main_content = ctk.CTkFrame(main, corner_radius=10)
+    main_content = ctk.CTkFrame(main, corner_radius=10,bg_color="orange")
     main_content.pack(padx=10, pady=10, fill="both", expand=True)
 
 
