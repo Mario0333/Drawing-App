@@ -108,12 +108,27 @@ def open_main_window():
     global current_user, current_user_id, dark_mode
     main = ctk.CTk()
     main.title("PALETTE")
-    main.geometry("800x600")
+    main.geometry("1280x700")
+    main.resizable(True, True)
     main.configure(fg_color="#FFFFFF" if not dark_mode else "#2E2E2E")
 
+# Configure main window grid
+    main.grid_columnconfigure(0, weight=1)
+    main.grid_rowconfigure(0, weight=0)  # Menu bar row
+    main.grid_rowconfigure(1, weight=1)  # Tabview row
+
     # Menu bar
-    menu_bar = ctk.CTkFrame(main, fg_color="#A39775", height=60)
-    menu_bar.pack(fill="x")
+    menu_bar = ctk.CTkFrame(main, fg_color="#A39775", height=60 , width=200 ,)
+    menu_bar.grid(row=0, column=0, sticky="ew")
+    
+    # Use grid inside menu_bar
+    menu_bar.grid_columnconfigure(0, weight=1)  # Left padding
+    menu_bar.grid_columnconfigure(1, weight=0)  # Profile pic and welcome
+    menu_bar.grid_columnconfigure(2, weight=1)  # Centered logo
+    menu_bar.grid_columnconfigure(3, weight=0)
+
+    logo_label = ctk.CTkLabel(menu_bar, text="🎨PALETTE", font=("Courier New", 35, "bold"), text_color= "#F0DACC" ,width=10)
+    logo_label.grid(row=0, column=1, sticky="ew")
 
     # Profile pic in menu
     profile_response = requests.get(f"{API_URL}/profile/{current_user_id}")
@@ -128,10 +143,10 @@ def open_main_window():
         menu_img = create_placeholder((40, 40))
     menu_img_ref = ImageTk.PhotoImage(menu_img)
     menu_profile_pic = ctk.CTkLabel(menu_bar, image=menu_img_ref, text="")
-    menu_profile_pic.pack(side="left", padx=10)
+    menu_profile_pic.grid(row=0, column=0, sticky="w", padx=5)
 
-    welcome_label = ctk.CTkLabel(menu_bar, text=f"Welcome, {current_user}!", font=("Arial", 16), text_color="black" if not dark_mode else "white")
-    welcome_label.pack(side="left", padx=10)
+    welcome_label = ctk.CTkLabel(menu_bar, text=f"Welcome, {current_user}!", font=("Arial", 16, "bold"), text_color="black" if not dark_mode else "white")
+    welcome_label.grid(row=0, column=0, sticky="w", padx=60)
 
     def logout():
         global current_user, current_user_id
@@ -141,7 +156,7 @@ def open_main_window():
         open_login_window()
 
     logout_button = ctk.CTkButton(menu_bar, text="Logout", command=logout, fg_color="#C44E00", hover_color="#0DA000")
-    logout_button.pack(side="right", padx=10)
+    logout_button.grid(row=0, column=3, sticky="e", padx=5)
 
     def toggle_dark_mode():
         global dark_mode
@@ -153,12 +168,12 @@ def open_main_window():
             tab.configure(fg_color="#FFFFFF" if not dark_mode else "#2E2E2E")
         main.update()
 
-    dark_mode_button = ctk.CTkButton(menu_bar, text="Toggle Dark Mode", command=toggle_dark_mode, fg_color="#C44E00", hover_color="#0DA000")
-    dark_mode_button.pack(side="right", padx=10)
-
+    dark_mode_button = ctk.CTkButton(menu_bar, text="Dark Mode", command=toggle_dark_mode, fg_color="#C44E00", hover_color="#0DA000")
+    dark_mode_button.grid(row=0, column=2, sticky="e", padx=5)
+    
     # Tabview
     tabview = ctk.CTkTabview(main, fg_color="#F0F0F0" if not dark_mode else "#3E3E3E")
-    tabview.pack(fill="both", expand=True, padx=20, pady=20)
+    tabview.grid(row=1, column=0, sticky="nsew", padx=20, pady=20)
 
    # Feed Tab
     feed_tab = tabview.add("Feed")
@@ -271,17 +286,17 @@ def open_main_window():
             messagebox.showerror("Error", response.json()["message"])
 
     # You Might Like Section (right side)
-    rec_frame = ctk.CTkFrame(feed_tab)
+    rec_frame = ctk.CTkFrame(feed_tab, fg_color="#FFFFFF" if not dark_mode else "#2E2E2E")
     rec_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
     rec_frame.grid_rowconfigure(0, weight=0)  # Title row
     rec_frame.grid_rowconfigure(1, weight=1)  # Scrollable area
     rec_frame.grid_columnconfigure(0, weight=1)  # Allow centering across the frame width
 
     # Bold "You Might Like" title, centered
-    rec_title = ctk.CTkLabel(rec_frame, text="You Might Like", font=("Arial", 14, "bold"), text_color="black" if not dark_mode else "white")
-    rec_title.grid(row=0, column=0, columnspan=1, sticky="nse", pady=(0, 10))  # sticky="nse" centers horizontally
+    rec_title = ctk.CTkLabel(rec_frame, text="You Might Like", font=("Arial", 16, "bold"), anchor="center" , text_color="black" if not dark_mode else "white")
+    rec_title.grid(row=0, column=0, columnspan=1, sticky="ns", pady=(0, 10))  # sticky="nse" centers horizontally
 
-    rec_scroll = ctk.CTkScrollableFrame(rec_frame, orientation="vertical", width=200, height=500)
+    rec_scroll = ctk.CTkScrollableFrame(rec_frame, orientation="vertical", width=200, height=500 , fg_color="#FFFFFF" if not dark_mode else "#2E2E2E")
     rec_scroll.grid(row=1, column=0, sticky="nsew")
 
     def load_recommendations():
