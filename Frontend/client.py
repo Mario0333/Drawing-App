@@ -271,16 +271,17 @@ def open_main_window():
             messagebox.showerror("Error", response.json()["message"])
 
     # You Might Like Section (right side)
-    rec_frame = ctk.CTkFrame(feed_tab , fg_color="#FFFFFF" if not dark_mode else "#2E2E2E", width=150)
-    rec_frame.grid(row=0, column=1, sticky="nsew", padx=5, pady=20)
+    rec_frame = ctk.CTkFrame(feed_tab)
+    rec_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
     rec_frame.grid_rowconfigure(0, weight=0)  # Title row
     rec_frame.grid_rowconfigure(1, weight=1)  # Scrollable area
+    rec_frame.grid_columnconfigure(0, weight=1)  # Allow centering across the frame width
 
-    # Bold "You Might Like" title
+    # Bold "You Might Like" title, centered
     rec_title = ctk.CTkLabel(rec_frame, text="You Might Like", font=("Arial", 14, "bold"), text_color="black" if not dark_mode else "white")
-    rec_title.grid(row=0, column=0, pady=(0, 10))
+    rec_title.grid(row=0, column=0, columnspan=1, sticky="nse", pady=(0, 10))  # sticky="nse" centers horizontally
 
-    rec_scroll = ctk.CTkScrollableFrame(rec_frame, orientation="vertical", width=100, height=500)
+    rec_scroll = ctk.CTkScrollableFrame(rec_frame, orientation="vertical", width=200, height=500)
     rec_scroll.grid(row=1, column=0, sticky="nsew")
 
     def load_recommendations():
